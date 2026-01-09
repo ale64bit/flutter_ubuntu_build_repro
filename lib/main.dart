@@ -1,15 +1,23 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:logging/logging.dart';
+import 'package:flutter_ubuntu_build_repro/audio_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      final sharedPreferences = await SharedPreferencesWithCache.create(
+        cacheOptions: const SharedPreferencesWithCacheOptions(),
+      );
+      await Future.wait([
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky),
+        AudioController.init(),
+      ]);
       runApp(const MyApp());
     },
     (err, trace) {
